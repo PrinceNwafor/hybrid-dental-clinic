@@ -111,6 +111,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;          /* guard against any accidental horizontal scroll */
 }
 
 body {
@@ -120,6 +121,7 @@ body {
   background-color: var(--color-white);
   line-height: 1.7;
   overflow-x: hidden;
+  max-width: 100%;
 }
 
 img {
@@ -222,9 +224,10 @@ blockquote {
 .section--dark p { color: rgba(255,255,255,0.75); }
 
 .grid { display: grid; gap: var(--space-8); }
-.grid-2 { grid-template-columns: repeat(2, 1fr); }
-.grid-3 { grid-template-columns: repeat(3, 1fr); }
-.grid-4 { grid-template-columns: repeat(4, 1fr); }
+/* minmax(0,1fr) so content (long words, big numbers) can't push tracks past the viewport */
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .flex { display: flex; }
 .flex-center  { display: flex; align-items: center; justify-content: center; }
@@ -1990,7 +1993,11 @@ blockquote {
   .footer__grid { grid-template-columns: 1fr; gap: var(--space-8); }
   .footer__bottom { flex-direction: column; text-align: center; }
 
-  .stat-card__number { font-size: var(--text-5xl); }
+  /* Stats: keep 2 columns but let tracks shrink (minmax 0) and trim padding,
+     otherwise the large numbers push the grid wider than the screen. */
+  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat-card { padding: var(--space-5) var(--space-3); }
+  .stat-card__number { font-size: var(--text-4xl); }
 
   .form-card { padding: var(--space-6); }
 
